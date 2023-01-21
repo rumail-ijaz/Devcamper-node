@@ -1,4 +1,5 @@
 const ErrorResponse = require('../utilis/errorResponse')
+
 const errorHandler = (err, req, res, next) => {
     let error = { ...err };
 
@@ -10,7 +11,7 @@ const errorHandler = (err, req, res, next) => {
     // Mongoose bad ObjectId
     if (err.name === 'CastError')
     {
-        const message = `Resource not found`;
+        const message =  `Bootcamp not found  with id of ${err.value}`;
         error = new ErrorResponse(message, 404);
     }
 

@@ -3,17 +3,18 @@ const colors= require('colors')
 const dotenv = require('dotenv')
 const logger =require('./middlewear/logger')
 const connectDB = require('./config/db')
-// const errorHandler = require('./middlewear/error')
+const errorHandler = require('./middlewear/error')
+
 // get env variables
 dotenv.config({path:'./config/config.env'})
 
 // CONNECT DB
-require("./config/db");
+connectDB()
+
 const app = express()
 
+// body parser
 app.use(express.json())
-
-
 
 // set port
 const PORT = process.env.PORT || 5000
@@ -22,9 +23,11 @@ const PORT = process.env.PORT || 5000
 app.use(logger)
 
 
-// Mount Router 
-app.use("/api", require("./routes"));
-// app.use(errorHandler)
+// Routers 
+app.use("/api", require("./routes"))
+
+// error handling
+app.use(errorHandler)
 
 // listening the  app  
 app.listen(PORT, ()=>{

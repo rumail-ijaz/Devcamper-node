@@ -2,22 +2,97 @@ const Bootcamp = require ('../model/bootcamp')
 const ErrorResponse = require('../utilis/errorResponse')
 const asyncHandler = require('../middlewear/async')
 const geocoder= require('../utilis/geocoder')
+
+
 // @desc    Get all bootcamps
 // @Routes  Get /api/v1/bootcamps
 // @acess   Public
-
-
 exports.getAllBootcamps = asyncHandler (async (req, res, next) => {
+    console.log(req.query,'query')
+    let query;
+    const reqQuery = { ...req.query }
+    console.log(reqQuery,'reqQuery')
+
+    const removeFields = ['select', 'sort', 'page', 'limit']
+
+    console.log(removeFields,'aray');
+    removeFields.forEach((params)=> delete reqQuery[params])
+    console.log(removeFields,'aray2');
 
   
-        const bootcamps = await Bootcamp.find()
-        res.status(200).json({ sucess: true, count:bootcamps.length,  data: bootcamps })
 
+
+    let queryStr = JSON.stringify(reqQuery)
+    console.log(queryStr,'queryStr')
+
+    queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
+    console.log(queryStr,'queryreplace')
+ 
+    query = Bootcamp.find(JSON.parse(queryStr))
+ 
+    console.log(query,'queryparse')
+
+    if (req.query.select)
+    {
+        const fields = req.query.select.split(',').join(' ');
+        console.log(fields,'fff')
+        query = query.select(fields)
+ 
+    }
+
+    if (req.query.sort)
+   {
+       const sortBy = req.query.sort.split(',').join(' ');
+       query = query.sort(sortBy)
+   }
+   else
+   {
+       query = query.sort('-createdAt')
+   }
+
+
+  
+  // pagination
+  const page = parseInt(req.query.page, 10) || 1;
+  const limit = parseInt(req.query.limit, 10) || 1;
+  const startIndex = (page - 1) * limit
+  const endIndex = page * limit
+  console.log(startIndex, "skips", endIndex)
+  const total = await Bootcamp.countDocuments()
+  console.log(total, "total")
+
+  query = query.skip(startIndex).limit(limit)
+
+        // if (populate)
+        // {
+        //     query = query.populate(populate)
+        // }
+        const result = await query
+    
+        const pagination = {}
+        if (endIndex < total)
+        {
+            pagination.next = {
+                page: page + 1,
+                limit
+            }
+        }
+        if (startIndex > 0)
+        {
+            pagination.prev = {
+                page: page - 1,
+                limit
+            }
+        }
+     
+    res.status(200).json({  success: true,
+        count: result.length,
+        pagination,
+        data: result })
+ 
+ })
  
  
-    // res.status(200).json({ sucess: true, msg: "Show all bootcamps" })
-})
-
 // @desc    Get Single bootcamps
 // @Routes  Get /api/v1/bootcamps/:id
 // @acess   Public
@@ -51,7 +126,7 @@ exports.createBootcamp = async (req, res, next) => {
     catch (err)
     {
         console.log(err)
-        res.status(400).json({ success: false  })
+        res.status(400).json({ success: false, error:err })
     }
  
 
@@ -99,6 +174,7 @@ exports.getBootcampInRadius = asyncHandler(async (req,res,next)=>{
 
     const bootcamps = await Bootcamp.find({
         location: { $geoWithin: { $centerSphere: [[lng, lat], radius] } }
+        // location:{ $geoWithin : { $ $centerSphere : [[lng, lat], radius] }}
     });
  
     res.status(200).json({

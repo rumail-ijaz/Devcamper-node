@@ -19,16 +19,13 @@ exports.getAllBootcamps = asyncHandler (async (req, res, next) => {
     removeFields.forEach((params)=> delete reqQuery[params])
     console.log(removeFields,'aray2');
 
-  
-
-
     let queryStr = JSON.stringify(reqQuery)
     console.log(queryStr,'queryStr')
 
     queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
     console.log(queryStr,'queryreplace')
  
-    query = Bootcamp.find(JSON.parse(queryStr))
+    query = Bootcamp.find(JSON.parse(queryStr)).populate('Courses')
  
     console.log(query,'queryparse')
 
@@ -43,6 +40,7 @@ exports.getAllBootcamps = asyncHandler (async (req, res, next) => {
     if (req.query.sort)
    {
        const sortBy = req.query.sort.split(',').join(' ');
+       console.log(sortBy,'sort');
        query = query.sort(sortBy)
    }
    else
@@ -154,8 +152,11 @@ exports.updateBootcamp = async (req, res, next) => {
 // @Routes  Delete /api/v1/bootcamps/:id
 // @acess   Private
 
-exports.deleteBootcamp = (req, res, next) => {
-    res.status(200).json({ success: true, msg: `update bootcamp ${req.params.id}` })
+exports.deleteBootcamp = async (req, res, next) => {
+    const bootcamp = await Bootcamp.findById(req.params.id);
+    console.log(bootcamp,'camp');
+    bootcamp.remove()
+    res.status(200).json({ success: true, msg: `delete bootcamp ${req.params.id}` })
 }
  
 

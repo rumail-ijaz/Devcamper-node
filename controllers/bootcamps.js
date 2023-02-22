@@ -97,10 +97,10 @@ exports.getAllBootcamps = asyncHandler (async (req, res, next) => {
 exports.getBootcamp = async (req, res, next) => {
 
         const _id = req.params.id
-        const bootcamp = await Bootcamp.findById(_id).then((e)=>{
+        await Bootcamp.findById(_id).then((bootcamp)=>{
 
-            console.log(e, 'ali')
-            res.status(200).json({ success: true, data: e })
+            console.log(bootcamp, 'bootcamp')
+            res.status(200).json({ success: true, data: bootcamp })
 
         }).catch((err)=>{
 
@@ -114,10 +114,8 @@ exports.getBootcamp = async (req, res, next) => {
 // @Routes  post /api/v1/bootcamps
 // @acess   Private
 exports.createBootcamp = async (req, res, next) => {
-   
     try
-    {
-
+    { 
         const bootcamp = await Bootcamp.create(req.body);
         res.status(201).json({ success: true, data: bootcamp });
     }
@@ -135,9 +133,10 @@ exports.createBootcamp = async (req, res, next) => {
 // @acess   Private
 
 exports.updateBootcamp = async (req, res, next) => {
+    console.log(req.body,'update');
     const bootcamp = await Bootcamp.findByIdAndUpdate(req.params.id, req.body, {
         new: true,
-        runvalidator: true
+        runvalidators: true
     });
     if (!bootcamp)
     {
@@ -153,9 +152,11 @@ exports.updateBootcamp = async (req, res, next) => {
 // @acess   Private
 
 exports.deleteBootcamp = async (req, res, next) => {
-    const bootcamp = await Bootcamp.findById(req.params.id);
+    const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id);
     console.log(bootcamp,'camp');
-    bootcamp.remove()
+    if(!bootcamp){
+        return res.status(400).json({ success:false })
+    }
     res.status(200).json({ success: true, msg: `delete bootcamp ${req.params.id}` })
 }
  

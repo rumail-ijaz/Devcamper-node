@@ -2,10 +2,10 @@
   "name": "devcamper",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "NODE_ENV==production node index",
-    "dev": "nodemon index"
+    "start": "NODE_ENV==production node server",
+    "dev": "nodemon server"
   },
   "author": "",
   "license": "ISC",

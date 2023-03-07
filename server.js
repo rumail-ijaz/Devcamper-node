@@ -22,9 +22,8 @@ const PORT = process.env.PORT || 5000
 // Middlewear
 app.use(logger)
 
-
 // Routers 
-app.use("/api", require("./routes"))
+app.use("/api/v1", require("./routes"))
 
 // error handling
 app.use(errorHandler)

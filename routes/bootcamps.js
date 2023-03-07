@@ -1,13 +1,13 @@
 const express = require('express')
 
-
 const {getAllBootcamps, createBootcamp, getBootcamp, getBootcampInRadius, deleteBootcamp, updateBootcamp}=require('../controllers/bootcamps')
-const {getAllCourses}=require('../controllers/courses')
+const {getAllCourses, addCourse}=require('../controllers/courses')
 
 const router = express.Router()
 
 // post
 router.post("/", createBootcamp ); // create bootcamp
+router.post("/:bootcampId/courses", addCourse ); // Add courses of specific Bootcamp
 
 // Read
 router.get("/", getAllBootcamps ); // Get all Bootcamps at once

@@ -1,8 +1,9 @@
 const express = require('express')
-const {getAllCourses, getCourse } = require('../controllers/courses')
-const router = express.Router()
+const {getAllCourses, getCourse, updateCourse, deleteCourse } = require('../controllers/courses')
 
-router.route('/:id').get(getCourse);
+const router = express.Router({ mergeParams:true })
+
+router.route('/:id').get(getCourse).put(updateCourse).delete(deleteCourse);
 router.route('/').get(getAllCourses)
 
 

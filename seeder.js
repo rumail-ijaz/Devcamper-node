@@ -43,6 +43,7 @@ const importData = async () => {
         await Course.deleteMany()
 
         console.log('Data Destroyed........'.red.inverse)
+        process.exit(1)
     }
     catch (err)
     {

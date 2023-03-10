@@ -1,6 +1,6 @@
 const express = require('express')
 
-const {getAllBootcamps, createBootcamp, getBootcamp, getBootcampInRadius, deleteBootcamp, updateBootcamp}=require('../controllers/bootcamps')
+const {getAllBootcamps, createBootcamp, getBootcamp, getBootcampInRadius, deleteBootcamp, updateBootcamp, bootcampPhotoUpload}=require('../controllers/bootcamps')
 const {getAllCourses, addCourse}=require('../controllers/courses')
 
 const router = express.Router()
@@ -20,5 +20,6 @@ router.delete("/:id", deleteBootcamp ); // delete one Bootcamp
 
 // update
 router.put('/:id', updateBootcamp)
+router.put('/:id/photo', bootcampPhotoUpload)
 
 module.exports=router

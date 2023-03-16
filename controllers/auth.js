@@ -1,8 +1,10 @@
+const ErrorResponse = require('../utilis/errorResponse')
 const asyncHandler= require('../middlewear/async')
 const User= require('../model/user')
-const ErrorResponse = require('../utilis/errorResponse')
 
-
+// @desc      Register user
+// @route     POST /api/v1/auth/register
+// @access    Public
 exports.register = asyncHandler(async(req,res,next)=>{
     const {name, email, password, role}= req.body
 
@@ -13,8 +15,12 @@ exports.register = asyncHandler(async(req,res,next)=>{
         role
     })
 
-    const token = user.getSignedJwtToken()
-    res.status(200).json({success:true, token})
+    sendTokenRespone(user, 200, res)
+
+    // Create token
+    // const token = user.getSignedJwtToken()
+
+    // res.status(200).json({success:true, token})
 })
 
 // @desc      Login user
@@ -23,7 +29,7 @@ exports.register = asyncHandler(async(req,res,next)=>{
 exports.login = asyncHandler(async (req, res, next) => {
     const { email, password } = req.body;
    
-    // Validate emil & password
+    // Validate email & password
     if (!email || !password)
     {
       return next(new ErrorResponse('Please provide an email and password', 400));
@@ -41,20 +47,21 @@ exports.login = asyncHandler(async (req, res, next) => {
     const isMatch = await user.matchPassword(password);
    
     if (!isMatch)
-    {
+    { 
       return next(new ErrorResponse('Invalid credentials', 401));
     }
     sendTokenRespone(user, 200, res)
 
-    const token = user.getSignedJwtToken()
+     // Create token
+    //  const token = user.getSignedJwtToken()
    
-    res.status(200).json({ sucesss: true, token, msg: "login sucessfull" })
+    // res.status(200).json({ sucesss: true, token, msg: "login sucessfull" })
    });
    
 
 // Get token from model, create cookie and send response
-
 const sendTokenRespone = (user, statusCode, res) => {
+    // Create token
     const token = user.getSignedJwtToken();
    
     const options = {
@@ -63,6 +70,10 @@ const sendTokenRespone = (user, statusCode, res) => {
       ),
       httpOnly: true,
     };
+
+    if(process.env.NODE_ENV === 'production'){
+      options.secure= True
+    }
    
     res.status(statusCode).cookie('token', token, options).json({
       success: true,

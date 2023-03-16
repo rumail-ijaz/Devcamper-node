@@ -1,6 +1,7 @@
 const express = require('express')
 const colors= require('colors')
 const fileupload = require('express-fileupload')
+const cookieParser= require('cookie-parser')
 const path= require('path')
 const dotenv = require('dotenv')
 const logger =require('./middlewear/logger')
@@ -17,6 +18,9 @@ const app = express()
 
 // body parser
 app.use(express.json())
+
+// Cookie parser
+app.use(cookieParser())
 
 // set port
 const PORT = process.env.PORT || 5000

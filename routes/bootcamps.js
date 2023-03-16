@@ -8,12 +8,12 @@ const Bootcamp= require('../model/bootcamp')
 
 // Middlewear
 const advancedResults= require('../middlewear/advancedResults')
-
+const { protect, authorize } = require('../middlewear/auth')
 
 const router = express.Router()
 
 // post
-router.post("/", createBootcamp ); // create bootcamp
+router.post("/", protect, authorize('publisher', 'admin'), createBootcamp ); // create bootcamp
 router.post("/:bootcampId/courses", addCourse ); // Add courses of specific Bootcamp
 
 // Read
@@ -23,10 +23,10 @@ router.get("/:id", getBootcamp ); // Get one Bootcamp
 router.get('/radius/:zipcode/:distance', getBootcampInRadius)
 
 // delete
-router.delete("/:id", deleteBootcamp ); // delete one Bootcamp
+router.delete("/:id", protect, authorize('publisher', 'admin'), deleteBootcamp ); // delete one Bootcamp
 
 // update
-router.put('/:id', updateBootcamp)
-router.put('/:id/photo', bootcampPhotoUpload)
+router.put('/:id', protect, authorize('publisher', 'admin'), updateBootcamp)
+router.put('/:id/photo', protect, authorize('publisher', 'admin'), bootcampPhotoUpload)
 
 module.exports=router

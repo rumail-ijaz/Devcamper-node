@@ -27,7 +27,6 @@ const UserSchema = new mongoose.Schema({
         minlength: 6,
         select: false,
     },
- 
     resetPasswordToken: String,
     resetPasswordExpire: Date,
     createdAt: {
@@ -42,7 +41,7 @@ UserSchema.pre('save', async function (next) {
     if (!this.isModified('password'))
     {
         next();
-    console.log(this.password,'password');
+        console.log(this.password,'password');
 
     }
 
@@ -58,7 +57,7 @@ UserSchema.methods.getSignedJwtToken = function () {
     });
  };
 
-// Match user entered password to hashed password in database
+// Match user entered password to hashed password in database for login
 UserSchema.methods.matchPassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
  };

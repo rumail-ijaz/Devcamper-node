@@ -33,7 +33,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
        console.log(decoded)
 
        req.user = await User.findById(decoded.id);
-
+        console.log(req.user,'user');
        next();
    } catch (err)
    {

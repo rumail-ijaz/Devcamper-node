@@ -1,6 +1,6 @@
 const Course = require('../model/course')
 const Bootcamp = require('../model/bootcamp')
-const ErrorResponse = require('../middlewear/error')
+const ErrorResponse = require('../utilis/errorResponse')
 const asyncHandler  = require('../middlewear/async')
 
 
@@ -11,7 +11,7 @@ const asyncHandler  = require('../middlewear/async')
 exports.getAllCourses = asyncHandler(async (req, res, next) => {
     if (req.params.bootcampId)
     {
-        const courses = Course.find({ bootcamp: req.params.bootcampId });
+        const courses = await Course.find({ bootcamp: req.params.bootcampId });
         return res.status(200).json({ sucess: true, count: courses.length, data: courses })
         
     }
@@ -35,7 +35,7 @@ exports.getCourse = asyncHandler(async (req, res, next) => {
 
     if (!course)
     {
-        return next(new ErrorResponse(`No course with the id  of ${req.params.id}`), 404)
+        return next(new ErrorResponse(`No course with the id  of ${req.params.id}`, 404))
     }
  
     res.status(200).json({ success: true,  data: course })
@@ -53,7 +53,7 @@ exports.addCourse = asyncHandler(async (req, res, next) => {
 
     if (!bootcamp)
     {
-        return next(new ErrorResponse(`No bootcamp with the id  of ${req.params.bootcampId}`), 404)
+        return next(new ErrorResponse(`No bootcamp with the id  of ${req.params.bootcampId}`, 404))
     }
 
     // Make sure user is bootcamp owner
@@ -75,7 +75,7 @@ exports.updateCourse = asyncHandler(async (req, res, next) => {
 
     if (!course)
     {
-        return next(new ErrorResponse(`No course with the id  of ${req.params.id}`), 404)
+        return next(new ErrorResponse(`No course with the id  of ${req.params.id}`, 404))
     }
 
     // Make sure user is course owner
@@ -100,7 +100,7 @@ exports.deleteCourse = asyncHandler(async (req, res, next) => {
 
     if (!course)
     {
-        return next(new ErrorResponse(`No course with the id  of ${req.params.id}`), 404)
+        return next(new ErrorResponse(`No course with the id  of ${req.params.id}`, 404))
     }
 
     // Make sure user is course owner

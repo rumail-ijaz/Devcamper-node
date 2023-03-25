@@ -33,6 +33,7 @@ app.use(fileupload())
 
 // Set static folder
 app.use(express.static(path.join(__dirname, 'public')))
+
 // Routers 
 app.use("/api/v1", require("./routes"))
 
